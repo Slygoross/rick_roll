@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You've Been Rick Rolled! 🎵</title>
+    <meta name="description" content="Never gonna give you up, never gonna let you down.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .heading {
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            font-weight: 800;
+            margin-bottom: 28px;
+            text-align: center;
+            animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+        }
+
+        .rainbow-text {
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #6c5ce7, #ff6b6b);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: rainbow 3s linear infinite;
+        }
+
+        @keyframes bounceIn {
+            from {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes rainbow {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 300% 50%;
+            }
+        }
+
+        .video-wrap {
+            width: 90%;
+            max-width: 800px;
+            aspect-ratio: 16/9;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(108, 92, 231, 0.4);
+            animation: fadeUp 0.8s ease 0.2s both;
+        }
+
+        .video-wrap iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Confetti */
+        #confetti {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="confetti"></canvas>
+    <p class="heading"><span class="rainbow-text">🎵 You just got Rick Rolled! 🎵</span></p>
+    <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&loop=1&playlist=dQw4w9WgXcQ"
+            allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+
+    <script>
+        // Confetti on load
+        const c = document.getElementById('confetti'), ctx = c.getContext('2d');
+        c.width = innerWidth; c.height = innerHeight;
+        const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#6c5ce7', '#00cec9', '#fd79a8'];
+        const pieces = Array.from({ length: 200 }, () => ({
+            x: Math.random() * c.width,
+            y: Math.random() * c.height - c.height,
+            w: Math.random() * 10 + 5, h: Math.random() * 6 + 3,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            vy: Math.random() * 4 + 2, vx: (Math.random() - 0.5) * 3,
+            r: Math.random() * 360, rs: (Math.random() - 0.5) * 10, o: 1
+        }));
+        let f = 0;
+        (function draw() {
+            ctx.clearRect(0, 0, c.width, c.height); f++;
+            pieces.forEach(p => {
+                p.y += p.vy; p.x += p.vx; p.r += p.rs;
+                if (f > 180) p.o -= 0.005;
+                ctx.save(); ctx.translate(p.x, p.y);
+                ctx.rotate(p.r * Math.PI / 180);
+                ctx.globalAlpha = Math.max(0, p.o);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                ctx.restore();
+            });
+            if (f < 400) requestAnimationFrame(draw);
+        })();
+        addEventListener('resize', () => { c.width = innerWidth; c.height = innerHeight; });
+    </script>
+</body>
+
+</html>
